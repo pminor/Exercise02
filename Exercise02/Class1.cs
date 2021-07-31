@@ -11,15 +11,50 @@ namespace Exercise02
     {
         public static String Towards(this BigInteger number)
         {
-            String description = "";
-
-           
-            return description;
+            return getDescription(number.ToString());
         }
 
         public static String Towards(this int number)
         {
+            return getDescription(number.ToString());
+        }
+
+        private static String getDescription(String numberString)
+        {
             String description = "";
+
+            var map = new Dictionary<int, String>();
+            map.Add(1, "");
+            map.Add(2, "thousand");
+            map.Add(3, "million");
+            map.Add(4, "billion");
+            map.Add(5, "trillion");
+            map.Add(6, "quadrillion");
+            map.Add(7, "quintillion");
+
+            var tokens = new Dictionary<int, String>();
+            int counter = 1;
+            while (numberString.Length > 0)
+            {
+                String desc = "";
+
+                if (numberString.Length == 1) desc = describeSingleDigit(numberString);
+                if (numberString.Length == 2) desc = describeDoubleDigit(numberString);
+                if (numberString.Length == 3) desc = describeTrippleDigit(numberString);
+
+                tokens.Add(counter, desc);
+                counter++;
+
+                if (numberString.Length < 4) numberString = "";
+                else numberString = numberString.Substring(0, numberString.Length - 3);
+            }
+
+            for (int i = counter; i>0; i--)
+            {
+                KeyValuePair<int, String> keyValuePair = tokens.ElementAt(i);
+                description +=keyValuePair.Value + " " + map.ElementAt(keyValuePair.Key).Value;
+            }
+
 
             return description;
         }
